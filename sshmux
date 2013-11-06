@@ -1,0 +1,23 @@
+#!/bin/bash
+# tmux session attacher for remote hosts
+# Written by Lowe Thiderman (lowe.thiderman@gmail.com)
+# WTFPL
+
+if [[ -z "$1" ]]; then
+  echo "Error: No host name given. Terminating."
+  exit 1
+fi
+
+host=$1
+session="${2:-main}"
+
+# Attach if it exists, create it if it doesn't.
+# Without new-session -A (1.7), we need to check the session first. Boo.
+if ssh -q $host -t tmux ls | grep -E "^$session:" &> /dev/null; then
+  cmd="attach -d -t"
+else
+  cmd="new-session -s"
+fi
+
+# The LANG part is for letting tmux know that it actually can UTF8.
+LANG="en_US.utf8" ssh $host -t tmux $cmd $session
