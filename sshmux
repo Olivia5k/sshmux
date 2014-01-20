@@ -11,6 +11,13 @@ fi
 host=$1
 session="${2:-main}"
 
+# Hosts connected to non-standard ports will have the format [<host>]:<port>.
+# This sed expression will find that and translate it into -p syntax for the
+# ssh command.
+if echo $host | grep -E '^\[' &> /dev/null; then
+  host=$(echo $host | sed -e 's/\[\(.*\)\]:\(.*\)/\1 -p \2/')
+fi
+
 # Attach if it exists, create it if it doesn't.
 # Without new-session -A (1.7), we need to check the session first. Boo.
 if ssh -q $host -t tmux ls | grep -E "^$session:" &> /dev/null; then
@@ -20,4 +27,4 @@ else
 fi
 
 # The LANG part is for letting tmux know that it actually can UTF8.
-LANG="en_US.utf8" ssh $host -t tmux $cmd $session
+LANG="en_US.utf8" ssh -A $host -t tmux $cmd $session
