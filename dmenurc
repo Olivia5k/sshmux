@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Safe dmenu defaults. Add to whatever cool patched version of dmenu you have.
-DMENU="dmenu -i -z"
+DMENU="dmenu -i"
 
 # Alternative ssh known_hosts file, if you need that for whatever reason
 # SSHMUX_KNOWN_HOSTS="$HOME/ssh/hax0r/known_hosts"
