@@ -28,16 +28,23 @@ def sshmux(ns):
 
     hostargs.insert(2, host)
 
-    p = sub.Popen(hostargs + ['-t', 'tmux -V && tmux ls'], **sub_kwargs)
+    cmd = 'which tmux &> /dev/null && tmux -V && tmux ls'
+    p = sub.Popen(hostargs + ['-t', cmd], **sub_kwargs)
     res = p.communicate()[0]
 
     if sys.version_info > (3,):
         res = res.decode()
 
     lines = res.strip().split('\r\n')
-    version, sessions = lines[0], lines[1:]
+    version = get_version(lines[0])
+    sessions = lines[1:]
 
-    print(version, sessions)
+    print(version >= (1, 7), sessions)
+
+
+def get_version(line):
+    strs = line[5:].split('.')
+    return tuple(map(lambda x: int(x), strs))
 
 
 def setup_arguments():
