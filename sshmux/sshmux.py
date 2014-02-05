@@ -36,13 +36,13 @@ def sshmux(ns):
         res = res.decode()
 
     lines = res.strip().split('\r\n')
-    version = get_version(lines[0])
+    version = get_tmux_version(lines[0])
     sessions = lines[1:]
 
     print(version >= (1, 7), sessions)
 
 
-def get_version(line):
+def get_tmux_version(line):
     strs = line[5:].split('.')
     return tuple(map(lambda x: int(x), strs))
 
